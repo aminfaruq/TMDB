@@ -10,10 +10,11 @@ import Combine
 
 class MovieViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
-    private var viewModel: MovieVM!
+    private var viewModel: MovieViewModel!
     private var dataSource: MovieTableViewDataSource<MovieViewCell, MovieResponse>!
     
     private var cancellables: Set<AnyCancellable> = []
+    public var isTvSeries = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,34 +29,60 @@ class MovieViewController: UIViewController {
     }
     
     func setupViewModel() {
-        viewModel = MovieVM(apiService: APIService())
-        viewModel.callFuncToGetMovieData()
+        viewModel = MovieViewModel(apiService: APIService(), contentType: isTvSeries ? .tvSeries : .movie)
+        viewModel.fetchData()
     }
     
     func bindViewModel() {
-        viewModel.$nowPlayingResponse
-            .sink { [weak self] _ in
-                self?.updateDataSource()
-            }
-            .store(in: &cancellables)
-        
-        viewModel.$popularResponse
-            .sink { [weak self] _ in
-                self?.updateDataSource()
-            }
-            .store(in: &cancellables)
-        
-        viewModel.$topRatedResponse
-            .sink { [weak self] _ in
-                self?.updateDataSource()
-            }
-            .store(in: &cancellables)
-        
-        viewModel.$upcomingResponse
-            .sink { [weak self] _ in
-                self?.updateDataSource()
-            }
-            .store(in: &cancellables)
+        if isTvSeries {
+            viewModel.$airingTodayResponse
+                .sink { [weak self] _ in
+                    self?.updateDataSource()
+                }
+                .store(in: &cancellables)
+            
+            viewModel.$onTheAirResponse
+                .sink { [weak self] _ in
+                    self?.updateDataSource()
+                }
+                .store(in: &cancellables)
+            
+            viewModel.$popularResponse
+                .sink { [weak self] _ in
+                    self?.updateDataSource()
+                }
+                .store(in: &cancellables)
+            
+            viewModel.$topRatedResponse
+                .sink { [weak self] _ in
+                    self?.updateDataSource()
+                }
+                .store(in: &cancellables)
+        } else {
+            viewModel.$nowPlayingResponse
+                .sink { [weak self] _ in
+                    self?.updateDataSource()
+                }
+                .store(in: &cancellables)
+            
+            viewModel.$popularResponse
+                .sink { [weak self] _ in
+                    self?.updateDataSource()
+                }
+                .store(in: &cancellables)
+            
+            viewModel.$topRatedResponse
+                .sink { [weak self] _ in
+                    self?.updateDataSource()
+                }
+                .store(in: &cancellables)
+            
+            viewModel.$upcomingResponse
+                .sink { [weak self] _ in
+                    self?.updateDataSource()
+                }
+                .store(in: &cancellables)
+        }
     }
     
     func updateDataSource() {
@@ -64,13 +91,13 @@ class MovieViewController: UIViewController {
             
             switch indexPath {
             case 0:
-                self.configureCell(cell, with: self.viewModel.nowPlayingResponse?.results)
+                self.configureCell(cell, with: self.isTvSeries ? self.viewModel.airingTodayResponse?.results : self.viewModel.nowPlayingResponse?.results)
             case 1:
-                self.configureCell(cell, with: self.viewModel.popularResponse?.results)
+                self.configureCell(cell, with: self.isTvSeries ? self.viewModel.onTheAirResponse?.results : self.viewModel.popularResponse?.results)
             case 2:
-                self.configureCell(cell, with: self.viewModel.topRatedResponse?.results)
+                self.configureCell(cell, with: self.isTvSeries ? self.viewModel.popularResponse?.results : self.viewModel.topRatedResponse?.results)
             default:
-                self.configureCell(cell, with: self.viewModel.upcomingResponse?.results)
+                self.configureCell(cell, with:  self.isTvSeries ? self.viewModel.topRatedResponse?.results : self.viewModel.upcomingResponse?.results)
             }
         }
         
@@ -88,9 +115,9 @@ class MovieViewController: UIViewController {
         results?.forEach { data in
             let view = MovieView()
             view.setupView()
-            view.movieTitleLbl.text = data.originalTitle
+            view.movieTitleLbl.text = isTvSeries ? data.originalName : data.originalTitle
             view.movieRatingLbl.text = "\(data.voteAverage ?? 0.0)"
-            view.movieReleaseLbl.text = data.releaseDate
+            view.movieReleaseLbl.text = isTvSeries ? data.firstAirDate : data.releaseDate
             
             ImageHelper.getImage(url: data.posterPath ?? "") { image, error in
                 if let image = image {
@@ -108,24 +135,16 @@ class MovieViewController: UIViewController {
         cell.stackView.addArrangedSubview(spacingView())
     }
     
-    func spacingView() -> UIView {
-        let spacingView = UIView()
-        spacingView.backgroundColor = .clear
-        spacingView.translatesAutoresizingMaskIntoConstraints = false
-        spacingView.widthAnchor.constraint(equalToConstant: 8).isActive = true
-        return spacingView
-    }
-    
     func cellReuseIdentifierForIndex(_ index: Int?) -> String {
         switch index {
         case 0:
-            return "Now Playing"
+            return isTvSeries ? "Airing Today" :  "Now Playing"
         case 1:
-            return "Popular"
+            return isTvSeries ? "On The Air" : "Popular"
         case 2:
-            return "Top Rated"
+            return isTvSeries ? "Popular" : "Top Rated"
         default:
-            return "Upcoming"
+            return isTvSeries ? "Top Rated" : "Upcoming"
         }
     }
     
