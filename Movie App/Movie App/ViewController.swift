@@ -16,7 +16,7 @@ class ViewController: UITabBarController {
     }
     
     func configureTab() {
-        let movieVC = MainTabBarWireframe.initHome()
+        let movieVC = MainTabBarWireframe.initHome(isTvSeries: false)
         let rootMovieVC = UINavigationController(rootViewController: movieVC)
         setupTabItem(
             rootMovieVC,
@@ -24,7 +24,7 @@ class ViewController: UITabBarController {
             unselectedImage: "film",
             selectedImage: "film.fill")
         
-        let tvVC = UIViewController()
+        let tvVC = MainTabBarWireframe.initHome(isTvSeries: true)
         let rootTvVC = UINavigationController(rootViewController: tvVC)
         setupTabItem(
             rootTvVC,
