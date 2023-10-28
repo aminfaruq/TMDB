@@ -44,26 +44,10 @@ class APIService {
             .eraseToAnyPublisher()
     }
     
-    private func fetchMovies(from endpoint: String) -> AnyPublisher<MovieResponse, Error> {
+    func fetchData(from endpoint: String) -> AnyPublisher<MovieResponse, Error> {
         return fetchDataPublisher(from: endpoint)
             .decode(type: MovieResponse.self, decoder: decoder)
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
-    }
-    
-    func fetchNowPlayingMovies() -> AnyPublisher<MovieResponse, Error> {
-        return fetchMovies(from: "movie/now_playing?language=en-US&page=1")
-    }
-    
-    func fetchPopularMovies() -> AnyPublisher<MovieResponse, Error> {
-        return fetchMovies(from: "movie/popular?language=en-US&page=1")
-    }
-
-    func fetchTopRatedMovies() -> AnyPublisher<MovieResponse, Error> {
-        return fetchMovies(from: "movie/top_rated?language=en-US&page=1")
-    }
-
-    func fetchUpcomingMovies() -> AnyPublisher<MovieResponse, Error> {
-        return fetchMovies(from: "movie/upcoming?language=en-US&page=1")
     }
 }
