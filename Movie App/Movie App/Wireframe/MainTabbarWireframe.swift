@@ -9,11 +9,12 @@ import Foundation
 import UIKit
 
 public struct MainTabBarWireframe {
-    public static func initHome() -> UIViewController {
+    public static func initHome(isTvSeries: Bool) -> UIViewController {
         let storyboard = UIStoryboard(name: "Movie", bundle: nil)
         guard let vc = storyboard.instantiateViewController(identifier: "Movie") as? MovieViewController else {
             return UIViewController()
         }
+        vc.isTvSeries = isTvSeries
         return vc
     }
 }
