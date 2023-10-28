@@ -6,3 +6,15 @@
 //
 
 import Foundation
+import UIKit
+
+public struct MainTabBarWireframe {
+    public static func initHome() -> UIViewController {
+        let storyboard = UIStoryboard(name: "Movie", bundle: nil)
+        guard let vc = storyboard.instantiateViewController(identifier: "Movie") as? MovieViewController else {
+            return UIViewController()
+        }
+        return vc
+    }
+}
+
