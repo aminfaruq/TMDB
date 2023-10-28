@@ -19,10 +19,14 @@ struct Date: Codable {
 struct Movie: Codable {
     let adult: Bool?
     let backdropPath: String?
+    let firstAirDate: String?
     let genreIds: [Int]?
     let id: Int?
     let originalLanguage: String?
     let originalTitle: String?
+    let originalName: String?
+    let name: String?
+    let originalCountry: [String]?
     let overview: String?
     let popularity: Double?
     let posterPath: String?
@@ -36,10 +40,14 @@ struct Movie: Codable {
     enum CodingKeys: String, CodingKey {
         case adult
         case backdropPath = "backdrop_path"
+        case firstAirDate = "first_air_date"
         case genreIds = "genre_ids"
         case id
         case originalLanguage = "original_language"
         case originalTitle = "original_title"
+        case originalName = "original_name"
+        case name
+        case originalCountry = "origin_country"
         case overview
         case popularity
         case posterPath = "poster_path"
