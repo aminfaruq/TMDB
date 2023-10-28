@@ -206,3 +206,12 @@ public struct ImageHelper {
     }
 }
 
+extension UIViewController {
+    func spacingView() -> UIView {
+        let spacingView = UIView()
+        spacingView.backgroundColor = .clear
+        spacingView.translatesAutoresizingMaskIntoConstraints = false
+        spacingView.widthAnchor.constraint(equalToConstant: 8).isActive = true
+        return spacingView
+    }
+}
