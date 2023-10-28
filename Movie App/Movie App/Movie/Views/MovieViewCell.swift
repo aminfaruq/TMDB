@@ -8,7 +8,11 @@
 import UIKit
 
 class MovieViewCell: UITableViewCell {
-
+    
+    @IBOutlet weak var stackView: UIStackView!
+    @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var seeAllLabel: UILabel!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
