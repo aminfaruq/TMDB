@@ -19,7 +19,7 @@ class ViewController: UITabBarController {
         let tabItems: [(viewController: UIViewController, title: String, unselectedImage: String, selectedImage: String)] = [
             (MainTabBarWireframe.initHome(isTvSeries: false), "Movie", "film", "film.fill"),
             (MainTabBarWireframe.initHome(isTvSeries: true), "TV", "tv", "tv.fill"),
-            (UIViewController(), "Person", "person", "person.fill"),
+            (MainTabBarWireframe.initPerson(), "Person", "person", "person.fill"),
             (UIViewController(), "Search", "magnifyingglass", "magnifyingglass")
         ]
         
