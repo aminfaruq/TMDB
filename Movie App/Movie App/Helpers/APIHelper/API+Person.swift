@@ -6,3 +6,10 @@
 //
 
 import Foundation
+import Combine 
+
+extension APIService {
+    func fetchPersons(page: Int) -> AnyPublisher<ActorResponse, Error> {
+        return fetchData(from: "person/popular?language=en-US&page=\(page)")
+    }
+}
