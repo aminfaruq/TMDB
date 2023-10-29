@@ -32,3 +32,16 @@ class MovieTableViewDataSource<CELL : UITableViewCell,T> : NSObject, UITableView
     }
     
 }
+
+class MovieTableViewDelegate : NSObject , UITableViewDelegate {
+    private var height : CGFloat!
+    
+    init(height: CGFloat) {
+        self.height = height
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return height
+    }
+}
+
