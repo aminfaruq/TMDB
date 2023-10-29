@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-class APIService {
+class APIService<T> {
     private let baseURL = "https://api.themoviedb.org/3/"
     private let apiKey = "5ba01fa664bad862f5c8f6cbbec5f291"
     private let headers: [String: String] = [
@@ -44,9 +44,9 @@ class APIService {
             .eraseToAnyPublisher()
     }
     
-    func fetchData(from endpoint: String) -> AnyPublisher<MovieResponse, Error> {
+    func fetchData<T: Decodable>(from endpoint: String) -> AnyPublisher<T, Error> {
         return fetchDataPublisher(from: endpoint)
-            .decode(type: MovieResponse.self, decoder: decoder)
+            .decode(type: T.self, decoder: decoder)
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
