@@ -17,7 +17,6 @@ class PersonListViewController: UIViewController {
     private var cancellables: Set<AnyCancellable> = []
 
     var currentPage = 1
-    var totalPages = 1
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,7 +38,6 @@ class PersonListViewController: UIViewController {
         viewModel.fetchPersons(page: currentPage, completion: {[weak self] (actorResponse) in
             self?.viewModel.actorResponse = actorResponse
             self?.updateDataSource()
-            self?.totalPages = actorResponse?.totalPages ?? 1
         })
     }
     
@@ -50,7 +48,7 @@ class PersonListViewController: UIViewController {
     private func updateDataSource() {
         delegate = PersonTableViewDelegate(height: 120, configureWillDisplayCell: {
             if ((self.tableView.contentOffset.y + self.tableView.frame.size.height) >= self.tableView.contentSize.height) {
-                if self.currentPage < self.totalPages {
+                if self.currentPage < self.viewModel.actorResponse?.totalPages ?? 1 {
                     self.loadMoreData()
                 }
             }
