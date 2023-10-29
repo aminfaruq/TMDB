@@ -117,10 +117,7 @@ class MovieViewController: UIViewController {
         results?.forEach { data in
             let view = MovieView()
             view.setupView()
-            view.movieTitleLbl.text = isTvSeries ? data.originalName : data.originalTitle
-            view.movieReleaseLbl.text = isTvSeries ? data.firstAirDate : data.releaseDate
-            view.movieRatingLbl.text = data.voteAverage?.ratingString
-
+            view.setupData(data: data, isTvSeries: isTvSeries)
             ImageHelper.getImagePublisher(url: data.posterPath ?? "")
                 .sink(receiveCompletion: { completion in
                     switch completion {
@@ -130,13 +127,9 @@ class MovieViewController: UIViewController {
                         print("Error: \(error)")
                     }
                 }, receiveValue: { image in
-                    // You have received the UIImage
-                    // You can now use the image
-                    // For example, setting it to an image view:
                     view.moviePosterImg.image = image
                 })
-                .store(in: &cancellables) // Make sure you keep track of cancellables if necessary
-            
+                .store(in: &cancellables)
             
             cell.stackView.addArrangedSubview(view)
         }

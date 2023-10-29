@@ -87,4 +87,11 @@ class MovieView: UIView {
             make.left.right.equalToSuperview().inset(8)
         }
     }
+    
+    func setupData(data: Movie, isTvSeries: Bool) {
+        movieTitleLbl.text = isTvSeries ? data.originalName : data.originalTitle
+        movieReleaseLbl.text = isTvSeries ? data.firstAirDate : data.releaseDate
+        movieRatingLbl.text = data.voteAverage?.ratingString
+        moviePosterImg.image = nil
+    }
 }
