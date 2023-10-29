@@ -24,16 +24,16 @@ class MovieViewController: UIViewController {
         bindViewModel()
     }
     
-    func setupTableView() {
+    private func setupTableView() {
         tableView.register(MovieViewCell.nib(), forCellReuseIdentifier: MovieViewCell.identifier())
     }
     
-    func setupViewModel() {
+    private func setupViewModel() {
         viewModel = MovieViewModel(apiService: APIService<MovieResponse>(), contentType: isTvSeries ? .tvSeries : .movie)
         viewModel.fetchData()
     }
     
-    func bindViewModel() {
+    private func bindViewModel() {
         if isTvSeries {
             viewModel.$airingTodayResponse
                 .sink { [weak self] _ in
@@ -85,7 +85,7 @@ class MovieViewController: UIViewController {
         }
     }
     
-    func updateDataSource() {
+    private func updateDataSource() {
         delegate = MovieTableViewDelegate(height: 250)
         dataSource = MovieTableViewDataSource(cellIdentifier: MovieViewCell.identifier()) { [weak self] (cell, indexPath) in
             guard let self = self else { return }
@@ -109,7 +109,7 @@ class MovieViewController: UIViewController {
         }
     }
     
-    func configureCell(_ cell: MovieViewCell, with results: [Movie]?) {
+    private func configureCell(_ cell: MovieViewCell, with results: [Movie]?) {
         cell.titleLabel.text = cellReuseIdentifierForIndex(tableView.indexPath(for: cell)?.row)
         cell.stackView.removeSubViews()
         cell.stackView.addArrangedSubview(spacingView())
@@ -144,7 +144,7 @@ class MovieViewController: UIViewController {
         cell.stackView.addArrangedSubview(spacingView())
     }
     
-    func cellReuseIdentifierForIndex(_ index: Int?) -> String {
+    private func cellReuseIdentifierForIndex(_ index: Int?) -> String {
         switch index {
         case 0:
             return isTvSeries ? "Airing Today" :  "Now Playing"
