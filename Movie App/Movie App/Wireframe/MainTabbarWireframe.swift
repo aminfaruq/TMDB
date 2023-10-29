@@ -17,5 +17,13 @@ public struct MainTabBarWireframe {
         vc.isTvSeries = isTvSeries
         return vc
     }
+    
+    public static func initPerson() -> UIViewController {
+        let storyboard = UIStoryboard(name: "PersonList", bundle: nil)
+        guard let vc = storyboard.instantiateViewController(identifier: "PersonList") as? PersonListViewController else {
+            return UIViewController()
+        }
+        return vc
+    }
 }
 
