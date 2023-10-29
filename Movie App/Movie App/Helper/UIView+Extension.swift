@@ -211,3 +211,9 @@ extension UIViewController {
         return spacingView
     }
 }
+
+extension Double {
+    var ratingString: String {
+        return String(format: "%.2f", self)
+    }
+}
