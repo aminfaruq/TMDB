@@ -29,7 +29,7 @@ class MovieViewController: UIViewController {
     }
     
     func setupViewModel() {
-        viewModel = MovieViewModel(apiService: APIService(), contentType: isTvSeries ? .tvSeries : .movie)
+        viewModel = MovieViewModel(apiService: APIService<MovieResponse>(), contentType: isTvSeries ? .tvSeries : .movie)
         viewModel.fetchData()
     }
     

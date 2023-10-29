@@ -14,7 +14,7 @@ enum ContentType {
 }
 
 class MovieViewModel: NSObject {
-    private let apiService: APIService
+    private let apiService: APIService<MovieResponse>
     private var cancellables = Set<AnyCancellable>()
     var contentType: ContentType
     
@@ -25,7 +25,7 @@ class MovieViewModel: NSObject {
     @Published var airingTodayResponse: MovieResponse?
     @Published var onTheAirResponse: MovieResponse?
     
-    init(apiService: APIService, contentType: ContentType) {
+    init(apiService: APIService<MovieResponse>, contentType: ContentType) {
         self.apiService = apiService
         self.contentType = contentType
     }
