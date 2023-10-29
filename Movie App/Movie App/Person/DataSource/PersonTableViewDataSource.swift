@@ -37,7 +37,6 @@ class PersonTableViewDataSource<CELL : UITableViewCell,T> : NSObject, UITableVie
 class PersonTableViewDelegate : NSObject , UITableViewDelegate {
     private var height : CGFloat!
     var configureWillDisplayCell : () -> () = { }
-
     
     init(height: CGFloat, configureWillDisplayCell : @escaping () -> ()) {
         self.height = height
@@ -47,7 +46,6 @@ class PersonTableViewDelegate : NSObject , UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return height
     }
-    
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         configureWillDisplayCell()
