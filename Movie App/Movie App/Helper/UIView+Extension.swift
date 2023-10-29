@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+import Combine
 import UIKit
 
 extension UIView {
@@ -173,37 +173,33 @@ extension UIColor {
 }
 
 extension URL {
-    func downloadImage(completion: @escaping (Data?, Error?) -> Void) {
-        let task = URLSession.shared.dataTask(with: self) { (data, _, error) in
-            if let error = error {
-                completion(nil, error)
-                return
-            }
-            completion(data, nil)
-        }
-        task.resume()
+    func downloadImagePublisher() -> AnyPublisher<Data, Error> {
+        URLSession.shared.dataTaskPublisher(for: self)
+            .map(\.data)
+            .mapError({ error in
+                error as Error
+            })
+            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
     }
 }
 
 
 public struct ImageHelper {
-    public static func getImage(url: String ,completion: @escaping (UIImage?, Error?) -> Void) {
-        if let imageURL = URL(string: "https://image.tmdb.org/t/p/w500/\(url)") {
-            imageURL.downloadImage { data, error in
-                if let data = data {
-                    if let image = UIImage(data: data) {
-                        completion(image, nil)
-                    } else {
-                        completion(nil, NSError(domain: "Image Conversion Error", code: 0, userInfo: nil))
-                    }
-                } else if let error = error {
-                    completion(nil, error)
-                }
-            }
-        } else {
-            completion(nil, NSError(domain: "Invalid URL", code: 0, userInfo: nil))
-        }
-    }
+    public static func getImagePublisher(url: String) -> AnyPublisher<UIImage, Error> {
+          guard let imageURL = URL(string: "https://image.tmdb.org/t/p/w500/\(url)") else {
+              return Fail(error: NSError(domain: "Invalid URL", code: 0, userInfo: nil)).eraseToAnyPublisher()
+          }
+
+          return imageURL.downloadImagePublisher()
+              .tryMap { data in
+                  guard let image = UIImage(data: data) else {
+                      throw NSError(domain: "Image Conversion Error", code: 0, userInfo: nil)
+                  }
+                  return image
+              }
+              .eraseToAnyPublisher()
+      }
 }
 
 extension UIViewController {

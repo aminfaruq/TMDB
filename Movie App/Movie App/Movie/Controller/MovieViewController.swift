@@ -119,15 +119,22 @@ class MovieViewController: UIViewController {
             view.movieRatingLbl.text = "\(data.voteAverage ?? 0.0)"
             view.movieReleaseLbl.text = isTvSeries ? data.firstAirDate : data.releaseDate
             
-            ImageHelper.getImage(url: data.posterPath ?? "") { image, error in
-                if let image = image {
-                    DispatchQueue.main.async {
-                        view.moviePosterImg.image = image
+            ImageHelper.getImagePublisher(url: data.posterPath ?? "")
+                .sink(receiveCompletion: { completion in
+                    switch completion {
+                    case .finished:
+                        break
+                    case .failure(let error):
+                        print("Error: \(error)")
                     }
-                } else if let error = error {
-                    print("Error getting image: \(error)")
-                }
-            }
+                }, receiveValue: { image in
+                    // You have received the UIImage
+                    // You can now use the image
+                    // For example, setting it to an image view:
+                    view.moviePosterImg.image = image
+                })
+                .store(in: &cancellables) // Make sure you keep track of cancellables if necessary
+            
             
             cell.stackView.addArrangedSubview(view)
         }
