@@ -8,7 +8,7 @@
 import UIKit
 
 class ViewController: UITabBarController {
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -16,39 +16,18 @@ class ViewController: UITabBarController {
     }
     
     func configureTab() {
-        let movieVC = MainTabBarWireframe.initHome(isTvSeries: false)
-        let rootMovieVC = UINavigationController(rootViewController: movieVC)
-        setupTabItem(
-            rootMovieVC,
-            title: "Movie",
-            unselectedImage: "film",
-            selectedImage: "film.fill")
+        let tabItems: [(viewController: UIViewController, title: String, unselectedImage: String, selectedImage: String)] = [
+            (MainTabBarWireframe.initHome(isTvSeries: false), "Movie", "film", "film.fill"),
+            (MainTabBarWireframe.initHome(isTvSeries: true), "TV", "tv", "tv.fill"),
+            (UIViewController(), "Person", "person", "person.fill"),
+            (UIViewController(), "Search", "magnifyingglass", "magnifyingglass")
+        ]
         
-        let tvVC = MainTabBarWireframe.initHome(isTvSeries: true)
-        let rootTvVC = UINavigationController(rootViewController: tvVC)
-        setupTabItem(
-            rootTvVC,
-            title: "TV",
-            unselectedImage: "tv",
-            selectedImage: "tv.fill")
-
-        let personVC = UIViewController()
-        let rootPersonVC = UINavigationController(rootViewController: personVC)
-        setupTabItem(
-            rootPersonVC,
-            title: "Person",
-            unselectedImage: "person",
-            selectedImage: "person.fill")
-        
-        let searchVC = UIViewController()
-        let rootExploreVC = UINavigationController(rootViewController: searchVC)
-        setupTabItem(
-            rootExploreVC,
-            title: "Search",
-            unselectedImage: "magnifyingglass",
-            selectedImage: "magnifyingglass")
-        
-        self.viewControllers = [rootMovieVC, rootTvVC, rootPersonVC, rootExploreVC]
+        viewControllers = tabItems.map { item in
+            let rootVC = UINavigationController(rootViewController: item.viewController)
+            setupTabItem(rootVC, title: item.title, unselectedImage: item.unselectedImage, selectedImage: item.selectedImage)
+            return rootVC
+        }
     }
     
     private func setupTabItem(_ base: UINavigationController, title: String, unselectedImage: String, selectedImage: String) {
@@ -60,7 +39,5 @@ class ViewController: UITabBarController {
         base.tabBarItem.image = tabBarImageFrom(UIImage(systemName: unselectedImage)?.withRenderingMode(.alwaysOriginal))
         base.tabBarItem.selectedImage = tabBarImageFrom(UIImage(systemName: selectedImage)?.withRenderingMode(.alwaysOriginal))
     }
-
-
 }
 
