@@ -12,7 +12,8 @@ class MovieViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     private var viewModel: MovieViewModel!
     private var dataSource: MovieTableViewDataSource<MovieViewCell, MovieResponse>!
-    
+    private var delegate: MovieTableViewDelegate!
+
     private var cancellables: Set<AnyCancellable> = []
     public var isTvSeries = false
     
@@ -24,7 +25,6 @@ class MovieViewController: UIViewController {
     }
     
     func setupTableView() {
-        tableView.delegate = self
         tableView.register(MovieViewCell.nib(), forCellReuseIdentifier: MovieViewCell.identifier())
     }
     
@@ -86,6 +86,7 @@ class MovieViewController: UIViewController {
     }
     
     func updateDataSource() {
+        delegate = MovieTableViewDelegate(height: 250)
         dataSource = MovieTableViewDataSource(cellIdentifier: MovieViewCell.identifier()) { [weak self] (cell, indexPath) in
             guard let self = self else { return }
             
@@ -102,6 +103,7 @@ class MovieViewController: UIViewController {
         }
         
         DispatchQueue.main.async {
+            self.tableView.delegate = self.delegate
             self.tableView.dataSource = self.dataSource
             self.tableView.reloadData()
         }
@@ -116,9 +118,9 @@ class MovieViewController: UIViewController {
             let view = MovieView()
             view.setupView()
             view.movieTitleLbl.text = isTvSeries ? data.originalName : data.originalTitle
-            view.movieRatingLbl.text = "\(data.voteAverage ?? 0.0)"
             view.movieReleaseLbl.text = isTvSeries ? data.firstAirDate : data.releaseDate
-            
+            view.movieRatingLbl.text = data.voteAverage?.ratingString
+
             ImageHelper.getImagePublisher(url: data.posterPath ?? "")
                 .sink(receiveCompletion: { completion in
                     switch completion {
@@ -156,12 +158,3 @@ class MovieViewController: UIViewController {
     }
     
 }
-
-extension MovieViewController: UITableViewDelegate {
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 250
-    }
-    
-}
-
