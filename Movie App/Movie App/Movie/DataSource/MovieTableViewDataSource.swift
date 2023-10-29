@@ -11,7 +11,6 @@ import UIKit
 class MovieTableViewDataSource<CELL : UITableViewCell,T> : NSObject, UITableViewDataSource {
     
     private var cellIdentifier : String!
-    private var items : T!
     var configureCell : (CELL, Int) -> () = {_,_ in }
     
     
